@@ -6,8 +6,8 @@
  * reduces internal bus speed and puts the CPU into a deep sleep.  The RTC wakes the device up 
  * about a second later.  The ports and ADC are then powered up, the AHB bus set to run at full speed 
  * and some I/O is performed.
- * Current consumption when asleep is below the measurement range of my home equipment but is of the order of
- * a microamp or less.  The stm32l011 is part of a nucleo board and I suspect that there is some leakage from the
+ * Current consumption when asleep is almost below the measurement range of my home equipment and is of the order of
+ * 3 to 4 microamps.  The stm32l011 is part of a nucleo board and I suspect that there is some leakage from the
  * other circuitry on the nucleo board which is upsetting the sleep time current measurement.
  */
 
@@ -169,7 +169,6 @@ void resume_from_low_power()
 	// Turn on GPIO A and B
         RCC_IOPENR |= (BIT1 + BIT0);
 	//Turn on ADC 
-        initClockHSI16();    
 	resumeADC();	
 }
 int main()
@@ -190,7 +189,8 @@ int main()
         testADC();          // read ADC channel 0 and output result to USART2
         drain(); // wait for any pending serial transmissions to end otherwise will exit sleep prematurely
         GPIOB_ODR &= ~BIT3; // Turn off LED
-        low_power_mode();   // off to sleep to save power     
+        low_power_mode();   // off to sleep to save power  
+        
     } 
     return 0;
 }
